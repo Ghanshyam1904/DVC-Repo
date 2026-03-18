@@ -5,8 +5,8 @@ stages:
     deps:
     - path: src/data_ingestion.py
       hash: md5
-      md5: 4c1929ef320def5ea85805ca618d87ee
-      size: 2958
+      md5: 555a167d1cc3958c7cc17e537fa6a024
+      size: 3662
     outs:
     - path: data/raw
       hash: md5
@@ -41,38 +41,45 @@ stages:
       nfiles: 2
     - path: src/feature_engineering.py
       hash: md5
-      md5: 1547d825ae25030f2ec90b99c85274cb
-      size: 4435
+      md5: 7bc571b3567467e13ed907f1610057ec
+      size: 5258
+    params:
+      params.yaml:
+        feature_engineering.max_features: 45
     outs:
     - path: data/processed
       hash: md5
-      md5: c88f74c6cf649a9a8b30fec24fa1934a.dir
-      size: 1180187
+      md5: 1de21ee48666bcd84ba1453db1fe6076.dir
+      size: 1065190
       nfiles: 2
   model_building:
     cmd: python src/model_building.py
     deps:
     - path: data/processed
       hash: md5
-      md5: c88f74c6cf649a9a8b30fec24fa1934a.dir
-      size: 1180187
+      md5: 1de21ee48666bcd84ba1453db1fe6076.dir
+      size: 1065190
       nfiles: 2
     - path: src/model_building.py
       hash: md5
-      md5: d1f85a41b2b7cccd67ee21c5c6608a3b
-      size: 3420
+      md5: 13464b8005ae5c49e4571454475b70c9
+      size: 4303
+    params:
+      params.yaml:
+        model_building.n_estimators: 20
+        model_building.random_state: 7
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: a97db3001adeae5ec216f22b1784e8db
-      size: 4002062
+      md5: 2e0dab23b6f0b75fa2f1b50c00d3c2a9
+      size: 751862
   model_evaluation:
     cmd: python src/model_evaluation.py
     deps:
     - path: models/model.pkl
       hash: md5
-      md5: a97db3001adeae5ec216f22b1784e8db
-      size: 4002062
+      md5: 2e0dab23b6f0b75fa2f1b50c00d3c2a9
+      size: 751862
     - path: src/model_evaluation.py
       hash: md5
       md5: c62970fe082310e70a28c470f9325f64
@@ -80,5 +87,5 @@ stages:
     outs:
     - path: reports/metrics.json
       hash: md5
-      md5: f7552790eb7927446fd5b68afaf5650f
-      size: 136
+      md5: 3b5431cff32a43a3badfcf30723aadd6
+      size: 144

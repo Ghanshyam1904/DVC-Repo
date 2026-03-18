@@ -4,6 +4,7 @@ import pandas as pd
 import pickle
 import logging
 from sklearn.ensemble import RandomForestClassifier
+import yaml
 
 # =========================
 # Logging Setup
@@ -31,6 +32,27 @@ if not logger.handlers:
 
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
+
+# =========================
+# Load the params
+# =========================
+
+def load_params(params_path: str) -> dict:
+    """load the params from yaml file"""
+    try:
+        with open(params_path, 'r') as file:
+            params = yaml.safe_load(file)
+        logger.debug('Parameters received from %s', params_path)
+        return params
+    except FileNotFoundError as e:
+        logger.error('File Not Found: %s', params_path)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML Error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error occured while loading the params: %s', e)
+        raise
 
 
 # =========================
@@ -64,8 +86,11 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray) -> RandomForestClassif
             raise ValueError("Mismatch in X_train and y_train length")
 
         # ✅ Direct parameters (no YAML)
-        n_estimators = 100
-        random_state = 42
+        # n_estimators = 100
+        # random_state = 42
+        params = load_params(params_path='params.yaml')
+        n_estimators = params['model_building']['n_estimators']
+        random_state = params['model_building']['random_state']
 
         logger.info(f"Training RandomForest with n_estimators={n_estimators}")
 

@@ -3,6 +3,7 @@ import os
 import logging
 from typing import Tuple
 from sklearn.feature_extraction.text import TfidfVectorizer
+import yaml
 
 # =========================
 # Logging Setup
@@ -32,6 +33,25 @@ if not logger.handlers:
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
+# =========================
+# Load the YAML
+# =========================
+def load_params(params_path: str) -> dict:
+    """load the params from yaml file"""
+    try:
+        with open(params_path, 'r') as file:
+            params = yaml.safe_load(file)
+        logger.debug('Parameters received from %s', params_path)
+        return params
+    except FileNotFoundError as e:
+        logger.error('File Not Found: %s', params_path)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML Error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error occured while loading the params: %s', e)
+        raise
 
 # =========================
 # Load Data
@@ -132,6 +152,8 @@ def save_data(df: pd.DataFrame, file_path: str) -> None:
 def main():
     try:
         logger.info("Pipeline started")
+        params = load_params(params_path='params.yaml')
+        max_features = params['feature_engineering']['max_features']
 
         train_data = load_data('./data/interim/train_processed.csv')
         test_data = load_data('./data/interim/test_processed.csv')
@@ -139,7 +161,7 @@ def main():
         train_df, test_df = apply_tfidf(
             train_data,
             test_data,
-            max_features=50
+            max_features=max_features
         )
 
         save_data(train_df, './data/processed/train_tfidf.csv')
