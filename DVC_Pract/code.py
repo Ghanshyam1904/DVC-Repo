@@ -10,6 +10,9 @@ data = {
 
 df = pd.DataFrame(data)
 
+new_role_loc = {'Name':'GF1','Age':20,'City':'City2'}
+df.loc[len(df.index)] = new_role_loc
+
 # Adding New Row to DF for V2
 # New Row {"Name":'v2',"age":20,'City':'City'}
 # df.iloc[len(df.index)] = new_roc_loc2
@@ -21,6 +24,10 @@ df = pd.DataFrame(data)
 # Ensure the 'Data directory exists at the root level
 data_dir = 'data'
 os.makedirs(data_dir,exist_ok=True)
+
+# Adding new role to df for v2
+
+
 
 # Define the Path
 file_path = os.path.join(data_dir,'sample_data.csv')
